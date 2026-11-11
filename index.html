@@ -1,0 +1,1755 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CLP Master | Guia de Estudos S7-1200 & CADe_SIMU + 25 Questões</title>
+    <style>
+        :root {
+            --bg-main: #070b14;
+            --bg-card: #0f172a;
+            --bg-card-hover: #162238;
+            --bg-card-alt: #0b1120;
+            --border: #1e293b;
+            --border-glow: #06b6d4;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --cyan: #06b6d4;
+            --cyan-light: #22d3ee;
+            --green: #10b981;
+            --green-bg: rgba(16, 185, 129, 0.15);
+            --red: #ef4444;
+            --red-bg: rgba(239, 68, 68, 0.15);
+            --amber: #f59e0b;
+            --amber-bg: rgba(245, 158, 11, 0.15);
+            --purple: #a855f7;
+            --radius: 16px;
+            --shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding-bottom: 80px;
+        }
+
+        code, .mono {
+            font-family: "Consolas", "Monaco", "Courier New", monospace;
+        }
+
+        /* Top Bar & Placar Fixo */
+        .top-bar {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: rgba(7, 11, 20, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 2px solid var(--border);
+            padding: 14px 20px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .top-bar-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .brand-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--cyan), #0d9488);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 17px;
+            color: #042f2e;
+            box-shadow: 0 0 20px rgba(6, 182, 212, 0.4);
+        }
+
+        .brand-title {
+            font-size: 21px;
+            font-weight: 900;
+            letter-spacing: -0.5px;
+            color: #fff;
+        }
+
+        .brand-title span {
+            color: var(--cyan);
+        }
+
+        .brand-sub {
+            font-size: 12.5px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .scoreboard {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .score-pill {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 7px 14px;
+            border-radius: 10px;
+            font-size: 13.5px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
+        }
+
+        .score-pill.correct { color: var(--green); border-color: rgba(16, 185, 129, 0.4); background: rgba(16, 185, 129, 0.08); }
+        .score-pill.wrong { color: var(--red); border-color: rgba(239, 68, 68, 0.4); background: rgba(239, 68, 68, 0.08); }
+        .score-pill.pct { color: var(--amber); border-color: rgba(245, 158, 11, 0.4); background: rgba(245, 158, 11, 0.08); }
+
+        .btn {
+            cursor: pointer;
+            border: 1px solid var(--border);
+            background: var(--bg-card);
+            color: var(--text-main);
+            padding: 9px 16px;
+            border-radius: 10px;
+            font-size: 13.5px;
+            font-weight: 700;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: var(--shadow);
+        }
+
+        .btn:hover {
+            border-color: var(--cyan);
+            background: var(--bg-card-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--cyan), #0891b2);
+            color: #042f2e;
+            border-color: #22d3ee;
+            font-weight: 800;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #22d3ee, var(--cyan));
+            color: #042f2e;
+            box-shadow: 0 0 18px rgba(6, 182, 212, 0.5);
+        }
+
+        .btn-danger {
+            background: rgba(239, 68, 68, 0.15);
+            color: #fca5a5;
+            border-color: rgba(239, 68, 68, 0.4);
+        }
+
+        .btn-danger:hover {
+            background: rgba(239, 68, 68, 0.3);
+            border-color: var(--red);
+        }
+
+        /* Progress Bar */
+        .progress-track {
+            max-width: 1200px;
+            margin: 10px auto 0;
+            height: 6px;
+            background: #04070d;
+            border-radius: 99px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--cyan), var(--green));
+            transition: width 0.3s ease;
+            box-shadow: 0 0 10px var(--cyan);
+        }
+
+        /* Quick Navigation */
+        .quick-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 28px 0 20px;
+        }
+
+        /* Section Headers */
+        .section-header {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            margin: 36px 0 18px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 900;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #fff;
+            letter-spacing: -0.5px;
+        }
+
+        .badge {
+            font-size: 11.5px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-weight: 800;
+            text-transform: uppercase;
+            background: rgba(6, 182, 212, 0.15);
+            color: var(--cyan-light);
+            border: 1px solid rgba(6, 182, 212, 0.35);
+            letter-spacing: 0.5px;
+        }
+
+        /* Theory & Video Grid */
+        .theory-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 20px;
+            margin-bottom: 28px;
+        }
+
+        .theory-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .theory-card:hover {
+            border-color: rgba(6, 182, 212, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .theory-card h3 {
+            font-size: 18px;
+            font-weight: 800;
+            margin: 10px 0 10px;
+            color: #fff;
+        }
+
+        .theory-card p {
+            font-size: 14px;
+            color: #cbd5e1;
+            margin-bottom: 14px;
+            line-height: 1.6;
+        }
+
+        .mini-box {
+            background: var(--bg-card-alt);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px 14px;
+            font-size: 13px;
+            margin-bottom: 12px;
+            color: #e2e8f0;
+        }
+
+        .mini-box strong {
+            color: var(--cyan-light);
+        }
+
+        .alert-tip {
+            background: var(--amber-bg);
+            border: 1px solid rgba(245, 158, 11, 0.35);
+            color: #fde68a;
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 12.5px;
+            margin-top: 10px;
+            font-weight: 500;
+        }
+
+        .video-btn-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 14px;
+            background: rgba(239, 68, 68, 0.12);
+            border: 1px solid rgba(239, 68, 68, 0.35);
+            color: #fca5a5;
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-size: 13.5px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .video-btn-link:hover {
+            background: rgba(239, 68, 68, 0.25);
+            border-color: #ef4444;
+            color: #fff;
+            transform: translateY(-1px);
+        }
+
+        /* Simulador de Contato de Selo */
+        .simulator-box {
+            background: var(--bg-card);
+            border: 2px solid rgba(6, 182, 212, 0.4);
+            border-radius: var(--radius);
+            padding: 24px;
+            margin-bottom: 32px;
+            box-shadow: 0 0 30px rgba(6, 182, 212, 0.15);
+        }
+
+        .sim-header {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 16px;
+        }
+
+        .motor-status {
+            padding: 8px 16px;
+            border-radius: 99px;
+            font-size: 13.5px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }
+
+        .motor-off {
+            background: #1e293b;
+            color: #94a3b8;
+            border: 1px solid #475569;
+        }
+
+        .motor-on {
+            background: var(--green-bg);
+            color: #34d399;
+            border: 1px solid var(--green);
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .ladder-canvas {
+            background: #04070d;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 16px;
+            overflow-x: auto;
+            margin-bottom: 16px;
+        }
+
+        .sim-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .btn-sim-start {
+            background: rgba(16, 185, 129, 0.2);
+            color: #6ee7b7;
+            border: 1px solid var(--green);
+            padding: 11px 20px;
+            font-weight: 800;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-sim-start:hover { background: rgba(16, 185, 129, 0.35); transform: translateY(-1px); }
+
+        .btn-sim-stop {
+            background: rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+            border: 1px solid var(--red);
+            padding: 11px 20px;
+            font-weight: 800;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-sim-stop:hover { background: rgba(239, 68, 68, 0.35); transform: translateY(-1px); }
+
+        /* Quiz Toolbar & Pills Map */
+        .quiz-toolbar {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow);
+        }
+
+        .toolbar-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            margin-bottom: 16px;
+        }
+
+        .filter-select {
+            background: var(--bg-card-alt);
+            color: var(--text-main);
+            border: 1px solid var(--border);
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 13.5px;
+            font-weight: 600;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .filter-select:focus {
+            border-color: var(--cyan);
+        }
+
+        .pills-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .q-pill {
+            width: 38px;
+            height: 36px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--bg-card-alt);
+            color: var(--text-muted);
+            font-size: 13px;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s ease;
+        }
+
+        .q-pill:hover {
+            border-color: var(--cyan);
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        .q-pill.done-ok {
+            background: var(--green-bg);
+            color: #34d399;
+            border-color: var(--green);
+        }
+
+        .q-pill.done-err {
+            background: var(--red-bg);
+            color: #fca5a5;
+            border-color: var(--red);
+        }
+
+        .q-pill.active-step {
+            outline: 2px solid var(--cyan);
+            color: #fff;
+            background: #1e293b;
+        }
+
+        /* Question Cards */
+        .question-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .q-card {
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            transition: all 0.2s ease;
+            box-shadow: var(--shadow);
+        }
+
+        .q-card.card-correct {
+            border-color: var(--green);
+            background: linear-gradient(145deg, var(--bg-card), rgba(16, 185, 129, 0.04));
+        }
+
+        .q-card.card-wrong {
+            border-color: var(--red);
+            background: linear-gradient(145deg, var(--bg-card), rgba(239, 68, 68, 0.04));
+        }
+
+        .q-card-top {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding-bottom: 14px;
+            margin-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .q-number {
+            background: rgba(6, 182, 212, 0.18);
+            color: var(--cyan-light);
+            border: 1px solid rgba(6, 182, 212, 0.4);
+            padding: 5px 12px;
+            border-radius: 8px;
+            font-weight: 900;
+            font-size: 13.5px;
+            letter-spacing: 0.5px;
+        }
+
+        .q-type-tag {
+            font-size: 12px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            background: #1e293b;
+            color: #cbd5e1;
+            font-weight: 700;
+        }
+
+        .q-prompt {
+            font-size: 17px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 18px;
+            line-height: 1.5;
+        }
+
+        /* Options */
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .options-tf-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 14px;
+        }
+
+        .opt-btn {
+            width: 100%;
+            text-align: left;
+            background: var(--bg-card-alt);
+            border: 2px solid var(--border);
+            color: var(--text-main);
+            padding: 14px 18px;
+            border-radius: 12px;
+            font-size: 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            transition: all 0.18s ease;
+        }
+
+        .opt-btn:hover:not(:disabled) {
+            border-color: var(--cyan);
+            background: var(--bg-card-hover);
+            transform: translateY(-1px);
+        }
+
+        .opt-btn:disabled {
+            cursor: default;
+        }
+
+        .opt-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .check-box {
+            min-width: 38px;
+            height: 34px;
+            border-radius: 8px;
+            background: #1e293b;
+            border: 2px solid #475569;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 13.5px;
+            color: #e2e8f0;
+            flex-shrink: 0;
+        }
+
+        /* Choice States */
+        .opt-btn.is-correct-choice {
+            background: rgba(16, 185, 129, 0.18);
+            border-color: var(--green);
+            color: #ecfdf5;
+            font-weight: 700;
+        }
+
+        .opt-btn.is-correct-choice .check-box {
+            background: var(--green);
+            border-color: var(--green);
+            color: #022c22;
+        }
+
+        .opt-btn.is-wrong-choice {
+            background: rgba(239, 68, 68, 0.18);
+            border-color: var(--red);
+            color: #fef2f2;
+        }
+
+        .opt-btn.is-wrong-choice .check-box {
+            background: var(--red);
+            border-color: var(--red);
+            color: #fff;
+        }
+
+        .opt-btn.is-dimmed {
+            opacity: 0.5;
+        }
+
+        /* Feedback Panel */
+        .feedback-panel {
+            margin-top: 18px;
+            padding: 18px;
+            border-radius: 12px;
+            border: 2px solid var(--border);
+        }
+
+        .feedback-panel.fb-ok {
+            background: rgba(16, 185, 129, 0.12);
+            border-color: rgba(16, 185, 129, 0.6);
+        }
+
+        .feedback-panel.fb-err {
+            background: rgba(239, 68, 68, 0.12);
+            border-color: rgba(239, 68, 68, 0.6);
+        }
+
+        .fb-headline {
+            font-size: 16.5px;
+            font-weight: 900;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .fb-ok .fb-headline { color: #34d399; }
+        .fb-err .fb-headline { color: #f87171; }
+
+        .correct-report-box {
+            background: #04070d;
+            border-left: 4px solid var(--green);
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            font-size: 14.5px;
+        }
+
+        .correct-report-box span {
+            display: block;
+            font-size: 11.5px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            font-weight: 800;
+            margin-bottom: 3px;
+            letter-spacing: 0.5px;
+        }
+
+        .correct-report-box strong {
+            color: #6ee7b7;
+        }
+
+        .fb-explanation {
+            font-size: 14px;
+            color: #e2e8f0;
+            line-height: 1.6;
+        }
+
+        .step-nav-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 18px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 640px) {
+            .q-prompt { font-size: 15px; }
+            .opt-btn { font-size: 14px; padding: 12px 14px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TOPO FIXO COM PLACAR EM TEMPO REAL -->
+    <header class="top-bar">
+        <div class="top-bar-inner">
+            <div class="brand">
+                <div class="brand-icon mono">CLP</div>
+                <div>
+                    <div class="brand-title">CLP<span>Master</span></div>
+                    <div class="brand-sub">Guia de Estudos (S7-1200 &amp; CADe_SIMU) + 25 Questões</div>
+                </div>
+            </div>
+
+            <div class="scoreboard">
+                <div class="score-pill mono" title="Total de questões respondidas">
+                    Respondidas: <span id="score-answered">0/25</span>
+                </div>
+                <div class="score-pill correct mono" title="Respostas corretas">
+                    ✔ Acertos: <span id="score-correct">0</span>
+                </div>
+                <div class="score-pill wrong mono" title="Respostas incorretas">
+                    ✖ Erros: <span id="score-wrong">0</span>
+                </div>
+                <div class="score-pill pct mono" title="Percentual de acerto">
+                    Nota: <span id="score-pct">0%</span>
+                </div>
+                <button type="button" class="btn btn-danger" onclick="resetAllQuestions()">
+                    ↺ Reiniciar Tudo
+                </button>
+            </div>
+        </div>
+        <div class="progress-track">
+            <div id="top-progress-bar" class="progress-fill"></div>
+        </div>
+    </header>
+
+    <main class="container">
+
+        <!-- BOTÕES DE ATALHO RÁPIDO -->
+        <div class="quick-nav">
+            <button type="button" class="btn btn-primary" onclick="scrollToElement('secao-questoes')">
+                📝 Ir para as 25 Questões Interativas
+            </button>
+            <button type="button" class="btn" onclick="scrollToElement('secao-resumo')">
+                📘 Guia de Teoria &amp; Prática no CADe_SIMU (S7-1200)
+            </button>
+            <button type="button" class="btn" onclick="scrollToElement('secao-simulador')">
+                ⚡ Testar Simulador de Contato de Selo
+            </button>
+        </div>
+
+        <!-- =========================================================
+             PARTE 1: GUIA DE ESTUDOS COM TEORIA E VÍDEOS DO S7-1200
+             ========================================================= -->
+        <div id="secao-resumo" class="section-header">
+            <h2 class="section-title">
+                <span>1. Guia Completo de Estudos: CLP S7-1200 &amp; CADe_SIMU</span>
+                <span class="badge">Teoria &amp; Vídeos</span>
+            </h2>
+            <button type="button" class="btn" onclick="toggleTheorySection()" id="btn-toggle-theory">
+                Ocultar Guia
+            </button>
+        </div>
+
+        <div id="theory-content">
+            
+            <h3 style="color: var(--cyan-light); margin: 24px 0 14px; font-size: 20px; font-weight: 800;">PARTE 1: Fundamentos Teóricos de CLP</h3>
+            
+            <div class="theory-grid">
+                <!-- Card 1: Entradas e Saídas -->
+                <div class="theory-card">
+                    <div>
+                        <span class="badge mono">I0.0 &amp; Q0.0</span>
+                        <h3>Entradas e Saídas (I/O) no CLP</h3>
+                        <p><strong>Conceito Teórico:</strong></p>
+                        <div class="mini-box">
+                            • <strong>Entradas Digitais (I):</strong> Conectam dispositivos de comando e sensores de campo (botoeiras, chaves fim de curso, sensores indutivos/capacitivos) que fornecem sinais em nível lógico binário (0 ou 1 / desligado ou ligado).<br><br>
+                            • <strong>Saídas Digitais (Q):</strong> Acionam as cargas e os atuadores do processo industrial (bobinas de contatores, sinalizadores luminosos, relés e solenóides) a partir da lógica processada pela CPU.
+                        </div>
+                    </div>
+                    <div>
+                        <div class="alert-tip">
+                            <strong>Dica:</strong> A letra Q (Output) é utilizada na norma IEC para evitar confusão com o algarismo zero (0).
+                        </div>
+                        <a href="http://www.youtube.com/watch?v=HArRJzli6mU" target="_blank" class="video-btn-link">
+                            ▶ Assistir Vídeo: Entradas/Saídas no CADe_SIMU
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Card 2: Linguagem Ladder -->
+                <div class="theory-card">
+                    <div>
+                        <span class="badge mono">Linguagem Ladder</span>
+                        <h3>Introdução à Linguagem Ladder e Endereçamento</h3>
+                        <p><strong>Conceito Teórico:</strong></p>
+                        <div class="mini-box">
+                            • A linguagem Ladder simula o fluxo de corrente através de "linhas" (rungs). Utiliza <strong>contatos</strong> (NA e NF) e <strong>bobinas</strong>.<br><br>
+                            • No Siemens S7-1200, as memórias seguem o padrão de endereçamento do fabricante (<code class="mono">%I0.0</code> para entradas e <code class="mono">%Q0.0</code> para saídas).
+                        </div>
+                    </div>
+                    <div>
+                        <div class="alert-tip">
+                            <strong>Nota:</strong> O fluxo lógico sempre caminha do barramento esquerdo para o direito.
+                        </div>
+                        <a href="http://www.youtube.com/watch?v=6TK2kJOTQKc" target="_blank" class="video-btn-link">
+                            ▶ Assistir Vídeo: Ladder e Endereçamento
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <h3 style="color: var(--cyan-light); margin: 32px 0 14px; font-size: 20px; font-weight: 800;">PARTE 2: Simulação Prática com o CLP S7-1200 no CADe_SIMU</h3>
+
+            <div class="theory-grid">
+                <!-- Card 3: Partida Direta -->
+                <div class="theory-card">
+                    <div>
+                        <span class="badge mono">Partida Direta</span>
+                        <h3>1. Partida Direta de Motor</h3>
+                        <p><strong>Aplicação Prática:</strong></p>
+                        <div class="mini-box">
+                            Montagem do circuito de força trifásico associado às saídas do CLP. Na programação Ladder, desenvolve-se o circuito de acionamento com botoeira de liga/desliga e a lógica de selamento para manter o motor energizado.
+                        </div>
+                    </div>
+                    <div>
+                        <div style="display:flex; flex-direction:column; gap:8px;">
+                            <a href="http://www.youtube.com/watch?v=i4sG0NURqjk" target="_blank" class="video-btn-link" style="margin-top:4px;">
+                                ▶ Assistir Vídeo (Opção 1) - Partida Direta S7-1200
+                            </a>
+                            <a href="http://www.youtube.com/watch?v=V-v1uEB2xOM" target="_blank" class="video-btn-link" style="margin-top:0;">
+                                ▶ Assistir Vídeo (Opção 2) - Partida Direta CADe_SIMU
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 4: Reversão -->
+                <div class="theory-card">
+                    <div>
+                        <span class="badge mono">Reversão</span>
+                        <h3>2. Partida Direta com Reversão</h3>
+                        <p><strong>Aplicação Prática:</strong></p>
+                        <div class="mini-box">
+                            Inversor do sentido de rotação de motores trifásicos. O projeto envolve o intertravamento lógico feito via software (Ladder) na CPU S7-1200, impedindo que os dois sentidos sejam acionados simultaneamente, garantindo total segurança contra curto-circuitos.
+                        </div>
+                    </div>
+                    <div>
+                        <a href="http://www.youtube.com/watch?v=hXNQs4yFS14" target="_blank" class="video-btn-link">
+                            ▶ Assistir Vídeo: Partida com Reversão S7-1200
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Card 5: Estrela-Triângulo -->
+                <div class="theory-card">
+                    <div>
+                        <span class="badge mono">Estrela-Triângulo</span>
+                        <h3>3. Partida Estrela-Triângulo</h3>
+                        <p><strong>Aplicação Prática:</strong></p>
+                        <div class="mini-box">
+                            Técnica utilizada para mitigar picos de corrente na partida de motores de maior potência. No CADe_SIMU, utiliza-se a programação Ladder do S7-1200 integrada aos temporizadores internos (<code class="mono">TON</code>) para gerenciar automaticamente a transição coordenada dos contatores Principal, Estrela e Triângulo.
+                        </div>
+                    </div>
+                    <div>
+                        <div style="display:flex; flex-direction:column; gap:8px;">
+                            <a href="http://www.youtube.com/watch?v=dG2cFEYo1EY" target="_blank" class="video-btn-link" style="margin-top:4px;">
+                                ▶ Assistir Vídeo (Opção 1) - Estrela-Triângulo
+                            </a>
+                            <a href="http://www.youtube.com/watch?v=VG6td8gDz7U" target="_blank" class="video-btn-link" style="margin-top:0;">
+                                ▶ Assistir Vídeo (Opção 2) - Simulação CADe_SIMU
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SIMULADOR PRÁTICO DE CONTATO DE SELO -->
+            <div id="secao-simulador" class="simulator-box">
+                <div class="sim-header">
+                    <div>
+                        <h3 style="font-size:18px; font-weight:900; color:#fff;">⚡ Bancada Interativa: Simulador de Contato de Selo em Ladder</h3>
+                        <p style="font-size:13.5px; color:var(--text-muted);">Clique nos botões abaixo para ver o selo mantendo a saída <code class="mono">Q0.0</code> ligada mesmo após soltar o botão de pulso <code class="mono">I0.0</code>.</p>
+                    </div>
+                    <div id="sim-status-pill" class="motor-status motor-off mono">
+                        SAÍDA Q0.0: DESLIGADA (0)
+                    </div>
+                </div>
+
+                <div class="ladder-canvas">
+                    <svg viewBox="0 0 600 160" style="width:100%; min-width:460px; height:auto; display:block;">
+                        <!-- Barramentos Esquerdo e Direito -->
+                        <line x1="20" y1="10" x2="20" y2="150" stroke="#10b981" stroke-width="4"/>
+                        <line x1="580" y1="10" x2="580" y2="150" stroke="#475569" stroke-width="4"/>
+
+                        <!-- Fio Inicial -->
+                        <line x1="20" y1="50" x2="90" y2="50" stroke="#10b981" stroke-width="3.5"/>
+
+                        <!-- Contato Parada I0.1 (Desliga) -->
+                        <line x1="90" y1="32" x2="90" y2="68" stroke="#e2e8f0" stroke-width="3"/>
+                        <line x1="130" y1="32" x2="130" y2="68" stroke="#e2e8f0" stroke-width="3"/>
+                        <line id="svg-stop-slash" x1="94" y1="64" x2="126" y2="36" stroke="#10b981" stroke-width="3"/>
+                        <text x="110" y="24" text-anchor="middle" fill="#f87171" font-family="monospace" font-size="13" font-weight="bold">I0.1 (Parada)</text>
+
+                        <!-- Fios até o Ramo Paralelo -->
+                        <line id="svg-wire-mid" x1="130" y1="50" x2="230" y2="50" stroke="#10b981" stroke-width="3.5"/>
+                        <line id="svg-wire-down-left" x1="185" y1="50" x2="185" y2="120" stroke="#10b981" stroke-width="3.5"/>
+                        <line id="svg-wire-seal-in" x1="185" y1="120" x2="230" y2="120" stroke="#10b981" stroke-width="3.5"/>
+
+                        <!-- Contato Partida I0.0 (Liga) -->
+                        <line x1="230" y1="32" x2="230" y2="68" stroke="#e2e8f0" stroke-width="3"/>
+                        <line x1="270" y1="32" x2="270" y2="68" stroke="#e2e8f0" stroke-width="3"/>
+                        <line id="svg-start-close" x1="230" y1="50" x2="270" y2="50" stroke="transparent" stroke-width="4"/>
+                        <text x="250" y="24" text-anchor="middle" fill="#38bdf8" font-family="monospace" font-size="13" font-weight="bold">I0.0 (Liga NA)</text>
+
+                        <!-- Contato de Selo Q0.0 (Em Paralelo) -->
+                        <line x1="230" y1="102" x2="230" y2="138" stroke="#e2e8f0" stroke-width="3"/>
+                        <line x1="270" y1="102" x2="270" y2="138" stroke="#e2e8f0" stroke-width="3"/>
+                        <line id="svg-seal-close" x1="230" y1="120" x2="270" y2="120" stroke="transparent" stroke-width="4"/>
+                        <text x="250" y="95" text-anchor="middle" fill="#fbbf24" font-family="monospace" font-size="13" font-weight="bold">Q0.0 (Selo NA)</text>
+
+                        <!-- Fios de Saída do Paralelo até Bobina Q0.0 -->
+                        <line id="svg-wire-seal-out" x1="270" y1="120" x2="315" y2="120" stroke="#475569" stroke-width="3.5"/>
+                        <line id="svg-wire-up-right" x1="315" y1="50" x2="315" y2="120" stroke="#475569" stroke-width="3.5"/>
+                        <line id="svg-wire-to-coil" x1="270" y1="50" x2="455" y2="50" stroke="#475569" stroke-width="3.5"/>
+
+                        <!-- Bobina de Saída Q0.0 -->
+                        <path d="M 465 32 A 22 22 0 0 0 465 68" fill="none" stroke="#e2e8f0" stroke-width="3"/>
+                        <path d="M 495 32 A 22 22 0 0 1 495 68" fill="none" stroke="#e2e8f0" stroke-width="3"/>
+                        <circle id="svg-coil-lamp" cx="480" cy="50" r="13" fill="transparent"/>
+                        <text x="480" y="24" text-anchor="middle" fill="#34d399" font-family="monospace" font-size="14" font-weight="bold">( Q0.0 ) Motor</text>
+
+                        <line x1="502" y1="50" x2="580" y2="50" stroke="#475569" stroke-width="3.5"/>
+                    </svg>
+                </div>
+
+                <div class="sim-controls">
+                    <button type="button" class="btn-sim-start mono" onclick="simPulseStart()">
+                        ▶ 1. PULSAR BOTOEIRA LIGA (I0.0)
+                    </button>
+                    <button type="button" class="btn-sim-stop mono" onclick="simPulseStop()">
+                        ■ 2. PULSAR BOTOEIRA DESLIGA (I0.1)
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- =========================================================
+             PARTE 2: AS 25 QUESTÕES INTERATIVAS COM GABARITO IMEDIATO
+             ========================================================= -->
+        <div id="secao-questoes" class="section-header">
+            <h2 class="section-title">
+                <span>2. Questionário Prático: 25 Questões de CLP</span>
+                <span class="badge">Correção Imediata</span>
+            </h2>
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <button type="button" id="btn-view-all" class="btn btn-primary" onclick="setDisplayMode('all')">
+                    📋 Mostrar Todas as 25 na Tela
+                </button>
+                <button type="button" id="btn-view-step" class="btn" onclick="setDisplayMode('step')">
+                    🎯 Modo 1 por Vez
+                </button>
+            </div>
+        </div>
+
+        <!-- Barra de Filtro e Mapa Rápido de Questões 1 a 25 -->
+        <div class="quiz-toolbar">
+            <div class="toolbar-row">
+                <div style="font-size:14px; color:#cbd5e1;">
+                    <strong>Instruções:</strong> Clique na alternativa desejada para marcar <strong>[X]</strong> ou escolha <strong>Verdadeiro (V) / Falso (F)</strong>. O sistema informa na hora se você acertou ou errou e mostra a resposta correta comentada!
+                </div>
+                <select id="topic-filter" class="filter-select" onchange="changeTopicFilter(this.value)">
+                    <option value="ALL">Filtrar: Todas as 25 Questões</option>
+                    <option value="IO">Tema: Entradas (I0.0) e Saídas (Q0.0)</option>
+                    <option value="ANALOG">Tema: Analógico vs. Digital</option>
+                    <option value="BIT">Tema: Bit, Byte e Endereçamento</option>
+                    <option value="SELO">Tema: Contato de Selo e Ladder</option>
+                    <option value="WRONG">Revisar Apenas as que Errei</option>
+                </select>
+            </div>
+
+            <!-- Mapa de Botões 1 a 25 -->
+            <div id="pills-map" class="pills-grid"></div>
+        </div>
+
+        <!-- Área onde as 25 questões são renderizadas -->
+        <div id="questions-container" class="question-list"></div>
+
+    </main>
+
+    <!-- =========================================================
+             JAVASCRIPT VANILLA
+             ========================================================= -->
+    <script>
+        var QUESTIONS = [
+            {
+                id: 1,
+                type: "MC",
+                topic: "IO",
+                topicName: "Entradas (I) e Saídas (Q)",
+                question: "Nos CLPs que seguem a norma internacional IEC 61131-3 (como a linha Siemens), o que significam as letras 'I' e 'Q' nos endereços I0.0 e Q0.0?",
+                options: [
+                    "I significa Entrada Física (Input) e Q significa Saída Física (Output).",
+                    "I significa Corrente Alternada e Q significa Quadro de Força.",
+                    "I significa Saída Digital e Q significa Entrada Analógica.",
+                    "I significa Inversor de Frequência e Q significa Quantidade de Bits."
+                ],
+                correct: 0,
+                explanation: "Na nomenclatura padrão IEC/Inglês, 'I' refere-se a Input (Entrada) e 'Q' refere-se a Output (Saída). Utiliza-se a letra Q em vez de O para não confundir a letra 'O' com o algarismo zero (0)."
+            },
+            {
+                id: 2,
+                type: "TF",
+                topic: "IO",
+                topicName: "Entradas (I) e Saídas (Q)",
+                question: "Botoeiras de comando, chaves fim de curso e sensores indutivos são dispositivos que enviam sinais para o CLP e, por isso, devem ser ligados nas ENTRADAS (ex: I0.0, I0.1).",
+                options: ["Verdadeiro", "Falso"],
+                correct: 0,
+                explanation: "Todo componente que lê uma ação do operador (botão) ou condição física da máquina (sensor, fim de curso, pressostato) envia informação PARA o CLP, sendo conectado nas Entradas (I)."
+            },
+            {
+                id: 3,
+                type: "MC",
+                topic: "IO",
+                topicName: "Entradas (I) e Saídas (Q)",
+                question: "Qual dos equipamentos abaixo é um ATUADOR e deve ser conectado em um borne de SAÍDA (ex: Q0.0) do CLP?",
+                options: [
+                    "Um sensor óptico que detecta garrafas na esteira.",
+                    "Uma botoeira de emergência tipo cogumelo.",
+                    "A bobina de um contator (K1) para ligar um motor ou uma válvula solenoide.",
+                    "Um sensor de temperatura termopar."
+                ],
+                correct: 2,
+                explanation: "Bobinas de contatores (K1), válvulas solenoides e lâmpadas de sinalização recebem ordens do CLP para agir no processo, portanto são ligados nas Saídas (Q0.0, Q0.1, etc.)."
+            },
+            {
+                id: 4,
+                type: "MC",
+                topic: "ANALOG",
+                topicName: "Analógico vs. Digital",
+                question: "Qual é a diferença correta entre um sinal DIGITAL e um sinal ANALÓGICO em um CLP?",
+                options: [
+                    "O sinal digital possui apenas 2 estados discretos (0 ou 1, ex: 0V ou 24VCC), enquanto o sinal analógico varia continuamente dentro de uma faixa (ex: 0 a 10V ou 4 a 20mA).",
+                    "O sinal digital mede temperatura de 0 a 500°C e o analógico serve apenas para acender lâmpadas.",
+                    "O sinal analógico só assume os valores 0 ou 1 na memória.",
+                    "Não existe diferença entre sinal analógico e digital."
+                ],
+                correct: 0,
+                explanation: "Sinais digitais trabalham apenas com Tudo ou Nada (0 = desligado/0V; 1 = ligado/24VCC). Já sinais analógicos assumem valores contínuos intermediários (como 0-10V ou 4-20mA) para medir nível, pressão, temperatura e vazão."
+            },
+            {
+                id: 5,
+                type: "TF",
+                topic: "ANALOG",
+                topicName: "Analógico vs. Digital",
+                question: "Um sensor ultrassônico que mede continuamente a altura da água em um reservatório enviando um sinal variável de 4 mA a 20 mA deve ser ligado em uma Entrada Analógica do CLP.",
+                options: ["Verdadeiro", "Falso"],
+                correct: 0,
+                explanation: "Sinais variáveis de 4 a 20 mA ou 0 a 10 V representam grandezas contínuas (0% a 100% do nível do tanque) e precisam ser conectados em portas de Entrada Analógica (ex: IW64)."
+            },
+            {
+                id: 6,
+                type: "MC",
+                topic: "BIT",
+                topicName: "Bit, Byte e Endereçamento",
+                question: "O que é um BIT e quantos bits formam exatamente 1 BYTE na memória do CLP?",
+                options: [
+                    "Bit é a menor unidade de informação binária (só vale 0 ou 1) e 1 Byte é formado por 8 bits.",
+                    "Bit é um conjunto de 16 números e 1 Byte possui 32 bits.",
+                    "Bit é uma tensão analógica de 10V e 1 Byte possui 10 bits.",
+                    "Bit é o cabo de rede do CLP e 1 Byte tem 100 bits."
+                ],
+                correct: 0,
+                explanation: "O Bit (Binary Digit) é a menor unidade lógica possível (0 ou 1). Cada grupo de 8 bits forma 1 Byte (numerados do bit .0 até o bit .7)."
+            },
+            {
+                id: 7,
+                type: "MC",
+                topic: "BIT",
+                topicName: "Bit, Byte e Endereçamento",
+                question: "No endereço de entrada 'I0.4', o que representam o número '0' e o número '4', respectivamente?",
+                options: [
+                    "0 é o número do Bit e 4 é o número do Byte.",
+                    "0 é o número do Byte e 4 é o número do Bit dentro desse Byte.",
+                    "0 significa desligado e 4 significa 4 Volts.",
+                    "0 é a saída física e 4 é a corrente em mA."
+                ],
+                correct: 1,
+                explanation: "O formato padrão de endereçamento de bit é [Área][Byte].[Bit]. Portanto, em I0.4: 'I' é Entrada, '0' é o Byte zero, e '4' é o bit número 4 desse byte."
+            },
+            {
+                id: 8,
+                type: "TF",
+                topic: "BIT",
+                topicName: "Bit, Byte e Endereçamento",
+                question: "No endereçamento do CLP, logo depois do endereço de entrada 'I0.7', o próximo endereço válido é o 'I0.8'.",
+                options: ["Verdadeiro", "Falso"],
+                correct: 1,
+                explanation: "O endereço I0.8 NÃO EXISTE! Como 1 Byte tem 8 bits contados de 0 a 7 (I0.0 até I0.7), quando acaba o bit 7 do byte 0, passamos para o bit 0 do próximo byte: I1.0."
+            },
+            {
+                id: 9,
+                type: "MC",
+                topic: "BIT",
+                topicName: "Bit, Byte e Endereçamento",
+                question: "Quais são os 8 bits que formam o Byte de saída 'QB0'?",
+                options: [
+                    "Q0.1 até Q0.8",
+                    "Q0.0 até Q0.7",
+                    "Q0.0 até Q0.9",
+                    "I0.0 até I0.7"
+                ],
+                correct: 1,
+                explanation: "O Byte de saída 0 (QB0) agrupa exatamente os 8 bits de saída do byte zero: Q0.0, Q0.1, Q0.2, Q0.3, Q0.4, Q0.5, Q0.6 e Q0.7."
+            },
+            {
+                id: 10,
+                type: "MC",
+                topic: "SELO",
+                topicName: "Contato de Selo e Ladder",
+                question: "Qual é a finalidade principal do 'Contato de Selo' (auto-retenção) em um programa Ladder?",
+                options: [
+                    "Manter uma saída (ex: Q0.0) ligada continuamente mesmo depois que o operador solta o botão pulsador de partida (I0.0).",
+                    "Aumentar a tensão da fonte do CLP de 24V para 220V.",
+                    "Transformar uma entrada digital em saída analógica.",
+                    "Bloquear o CLP para que ninguém consiga desligar a máquina."
+                ],
+                correct: 0,
+                explanation: "Como o botão de partida (NA) volta por mola quando solto, o contato de selo cria um caminho alternativo que mantém a bobina Q0.0 energizada até que o botão de parada seja acionado."
+            },
+            {
+                id: 11,
+                type: "MC",
+                topic: "SELO",
+                topicName: "Contato de Selo e Ladder",
+                question: "Como devemos programar o Contato de Selo no diagrama Ladder para segurar a saída Q0.0 acionada pelo botão de partida I0.0?",
+                options: [
+                    "Colocando um contato Normalmente Aberto (NA) com o endereço da própria saída Q0.0 em PARALELO com o contato NA do botão de partida I0.0.",
+                    "Colocando um contato de I0.0 em série com duas bobinas diferentes.",
+                    "Colocando um contato NF de Q0.0 em série com o botão de ligar.",
+                    "Ligando o botão de partida diretamente no terra da fonte."
+                ],
+                correct: 0,
+                explanation: "O selo é sempre feito com um contato NA referenciando a própria bobina acionada (Q0.0) ligado em PARALELO (lógica OU) com o botão de partida (I0.0)."
+            },
+            {
+                id: 12,
+                type: "TF",
+                topic: "SELO",
+                topicName: "Contato de Selo e Ladder",
+                question: "Caso o programador esqueça de colocar o contato de selo Q0.0 em paralelo com o botão de pulso I0.0, o motor só ficará ligado enquanto o operador mantiver o dedo apertando o botão I0.0.",
+                options: ["Verdadeiro", "Falso"],
+                correct: 0,
+                explanation: "Sem o contato de selo em paralelo, assim que o operador tirar o dedo da botoeira pulsadora I0.0, a linha lógica se abre e a bobina Q0.0 desliga imediatamente."
+            },
+            {
+                id: 13,
+                type: "MC",
+                topic: "SELO",
+                topicName: "Contato de Selo e Ladder",
+                question: "Em um circuito com Contato de Selo, onde deve ser inserido o contato da botoeira de DESLIGAR (Parada) para interromper o funcionamento do motor?",
+                options: [
+                    "Em SÉRIE com o conjunto (partida + selo), para cortar a passagem de sinal até a bobina Q0.0 quando acionado.",
+                    "Em paralelo com o contato de selo Q0.0.",
+                    "Depois da bobina Q0.0, no barramento direito.",
+                    "Em uma entrada analógica."
+                ],
+                correct: 0,
+                explanation: "Para desenergizar a bobina Q0.0 e derrubar o selo, o contato de parada precisa abrir a linha principal, ficando portanto em SÉRIE com o ramo do selo."
+            },
+            {
+                id: 14,
+                type: "MC",
+                topic: "BIT",
+                topicName: "Bit, Byte e Endereçamento",
+                question: "Para que servem os endereços iniciados pela letra 'M' (como M0.0, M0.1), conhecidos como Memórias Auxiliares, Flags ou Markers?",
+                options: [
+                    "Para guardar estados lógicos (0 ou 1) internamente no programa (como um relé auxiliar virtual) sem gastar um pino físico de saída do CLP.",
+                    "Para ligar motores pesados diretamente sem usar contator.",
+                    "Para medir a temperatura interna do painel elétrico.",
+                    "Apenas para indicar erro de memória queimada."
+                ],
+                correct: 0,
+                explanation: "Os bits de memória (M0.0, M0.1...) funcionam como bobinas e contatos auxiliares virtuais internos da CPU, ideais para fazer selos intermediários e intertravamentos sem ocupar bornes físicos Q."
+            },
+            {
+                id: 15,
+                type: "MC",
+                topic: "SELO",
+                topicName: "Contato de Selo e Ladder",
+                question: "Na linguagem Ladder, qual é o símbolo do contato Normalmente Aberto (NA), do contato Normalmente Fechado (NF) e da Bobina de Saída, respectivamente?",
+                options: [
+                    "NA: —| |—   |   NF: —|/|—   |   Bobina: —( )—",
+                    "NA: —( )—   |   NF: —| |—   |   Bobina: —|/|—",
+                    "NA: —|/|—   |   NF: —| |—   |   Bobina: —[ ]—",
+                    "Todos usam o mesmo símbolo no Ladder."
+                ],
+                correct: 0,
+                explanation: "No diagrama Ladder: —| |— representa um contato Normalmente Aberto (NA), —|/|— representa um contato Normalmente Fechado (NF) e —( )— representa uma Bobina (saída ou memória)."
+            },
+            {
+                id: 16,
+                type: "TF",
+                topic: "SELO",
+                topicName: "Contato de Selo e Ladder",
+                question: "Quando um bit de entrada está em estado 0 (desligado / 0V), seu contato Normalmente Aberto —| |— não conduz, mas seu contato Normalmente Fechado —|/|— permite a passagem do sinal lógico.",
+                options: ["Verdadeiro", "Falso"],
+                correct: 0,
+                explanation: "O contato NF (—|/|—) funciona com lógica inversa: enquanto o bit vale 0, ele permanece fechado conduzindo energia lógica; quando o bit vai para 1, o contato NF se abre."
+            },
+            {
+                id: 17,
+                type: "MC",
+                topic: "IO",
+                topicName: "Entradas (I) e Saídas (Q)",
+                question: "Qual é a sequência correta das 3 etapas do Ciclo de Varredura (Scan) que o CLP executa continuamente?",
+                options: [
+                    "1º Lê as Entradas (I) -> 2º Executa o Programa na CPU -> 3º Atualiza as Saídas (Q).",
+                    "1º Liga todas as Saídas (Q) -> 2º Apaga a memória -> 3º Desliga as Entradas (I).",
+                    "1º Lê apenas as saídas -> 2º Executa metade do programa -> 3º Reinicia o CLP.",
+                    "O CLP só lê as entradas uma única vez quando é ligado na tomada."
+                ],
+                correct: 0,
+                explanation: "O ciclo de varredura (Scan Cycle) repete-se a cada poucos milissegundos nesta ordem: 1) Leitura das entradas físicas para a imagem de processo, 2) Execução da lógica do programa, e 3) Atualização das saídas físicas."
+            },
+            {
+                id: 18,
+                type: "MC",
+                topic: "ANALOG",
+                topicName: "Analógico vs. Digital",
+                question: "Se o CLP precisa controlar proporcionalmente a abertura de uma válvula (de 0% a 100%) ou a velocidade de um Inversor de Frequência enviando um sinal de 0 a 10V, qual porta do CLP deve ser usada?",
+                options: [
+                    "Saída Analógica (ex: QW64 / AQ).",
+                    "Entrada Digital (ex: I0.0).",
+                    "Saída Digital (ex: Q0.0).",
+                    "Entrada Analógica (ex: IW64)."
+                ],
+                correct: 0,
+                explanation: "Como o CLP está ENVIANDO um sinal contínuo variável (0 a 10V) para controlar um equipamento externo, trata-se de uma Saída Analógica (endereçada como Word, ex: QW64)."
+            },
+            {
+                id: 19,
+                type: "TF",
+                topic: "IO",
+                topicName: "Entradas (I) e Saídas (Q)",
+                question: "Quando um sensor alimentado em 24VCC é acionado e aplica 24VCC no pino da entrada 'I0.0' do CLP, o bit 'I0.0' passa a ter nível lógico '1' dentro do programa.",
+                options: ["Verdadeiro", "Falso"],
+                correct: 0,
+                explanation: "Nas entradas digitais industriais padrão 24VCC, 0V corresponde ao nível lógico '0' (Falso) e a presença de 24VCC corresponde ao nível lógico '1' (Verdadeiro)."
+            },
+            {
+                id: 20,
+                type: "MC",
+                topic: "ANALOG",
+                topicName: "Analógico vs. Digital",
+                question: "Por que uma entrada ou saída analógica precisa de um endereço do tamanho de 1 WORD (16 bits, como IW64) em vez de apenas 1 Bit (como I0.0)?",
+                options: [
+                    "Porque 1 Bit só armazena 0 ou 1, enquanto 1 Word (16 bits) permite representar milhares de valores numéricos inteiros (ex: de 0 a 27.648) para medir a faixa analógica com precisão.",
+                    "Porque sensores analógicos têm 16 cabos elétricos.",
+                    "Porque IW64 liga 64 lâmpadas digitais simultaneamente.",
+                    "Não há motivo técnico; 1 bit seria suficiente para ler 0 a 10V."
+                ],
+                correct: 0,
+                explanation: "O conversor Analógico-Digital (A/D) transforma a tensão (0-10V) ou corrente (4-20mA) em um número inteiro proporcional (nos CLPs Siemens, de 0 a 27.648), exigindo 16 bits (1 Word) para armazenar esse valor."
+            },
+            {
+                id: 21,
+                type: "MC",
+                topic: "ANALOG",
+                topicName: "Analógico vs. Digital",
+                question: "Por que o sinal analógico de corrente '4 a 20 mA' é mais seguro e utilizado na indústria do que o sinal de '0 a 20 mA'?",
+                options: [
+                    "Porque com o 'zero vivo' em 4 mA (0% da leitura), se o fio se romper a corrente cai para 0 mA, permitindo que o CLP identifique imediatamente a falha de cabo partido.",
+                    "Porque 4 a 20 mA funciona sem fonte de alimentação.",
+                    "Porque 0 a 20 mA queima a entrada do CLP.",
+                    "Porque 4 mA representa 100% do tanque cheio."
+                ],
+                correct: 0,
+                explanation: "No padrão 4-20mA, mesmo quando a grandeza medida está em 0%, circula uma corrente mínima de 4mA. Se a corrente cair a 0mA, o CLP sabe que o cabo rompeu ou o sensor desligou."
+            },
+            {
+                id: 22,
+                type: "TF",
+                topic: "SELO",
+                topicName: "Contato de Selo e Ladder",
+                question: "Dentro de um programa Ladder, podemos repetir vários contatos NA —| |— ou NF —|/|— com o endereço 'Q0.0' em diferentes linhas do programa para fazer selo, sinalização e intertravamento.",
+                options: ["Verdadeiro", "Falso"],
+                correct: 0,
+                explanation: "O estado da saída Q0.0 fica salvo na memória do CLP e pode ser consultado por quantos contatos abertos ou fechados você precisar ao longo do programa. O que não se deve repetir em linhas diferentes é a bobina simples —( )— do mesmo endereço."
+            },
+            {
+                id: 23,
+                type: "MC",
+                topic: "BIT",
+                topicName: "Bit, Byte e Endereçamento",
+                question: "Quantos Bits e quantos Bytes existem em uma variável do tipo WORD (ex: MW10 ou IW64)?",
+                options: [
+                    "16 Bits (equivalente a 2 Bytes).",
+                    "8 Bits (equivalente a 1 Byte).",
+                    "1 Bit (equivalente a meio Byte).",
+                    "64 Bits (equivalente a 8 Bytes)."
+                ],
+                correct: 0,
+                explanation: "Na hierarquia de dados do CLP: 1 Bit (0 ou 1) -> 1 Byte (8 bits) -> 1 Word (16 bits = 2 Bytes) -> 1 Double Word / DWord (32 bits = 4 Bytes)."
+            },
+            {
+                id: 24,
+                type: "MC",
+                topic: "IO",
+                topicName: "Entradas (I) e Saídas (Q)",
+                question: "Em diagramas elétricos no padrão alemão (muito comum em manuais antigos da Siemens), as entradas e saídas são representadas por 'E0.0' e 'A0.0'. A quais endereços eles correspondem no padrão IEC atual?",
+                options: [
+                    "E0.0 corresponde a I0.0 (Entrada) e A0.0 corresponde a Q0.0 (Saída).",
+                    "E0.0 corresponde a Q0.0 (Saída) e A0.0 corresponde a I0.0 (Entrada).",
+                    "Ambos representam bobinas de temporizadores.",
+                    "E0.0 é Emergência e A0.0 é Alarme sonoro."
+                ],
+                correct: 0,
+                explanation: "Do alemão: 'E' vem de Eingang (Entrada = I) e 'A' vem de Ausgang (Saída = Q). Portanto, E0.0 é exatamente o mesmo que I0.0, e A0.0 é o mesmo que Q0.0."
+            },
+            {
+                id: 25,
+                type: "MC",
+                topic: "SELO",
+                topicName: "Contato de Selo e Ladder",
+                question: "Além do circuito tradicional de Contato de Selo em paralelo, quais bobinas especiais do Ladder permitem ligar e travar um bit em '1' com apenas um pulso e desligá-lo ('0') com outro pulso?",
+                options: [
+                    "As bobinas Set —(S)— e Reset —(R)—.",
+                    "Os contatos analógicos IW e QW.",
+                    "Duas bobinas normais ligadas em curto.",
+                    "Não existe outra forma de reter um sinal no CLP."
+                ],
+                correct: 0,
+                explanation: "A bobina Set —(S)— energiza e retém o endereço em nível 1 mesmo após o pulso de entrada sumir. Para voltar o endereço a 0, aciona-se a bobina Reset —(R)— correspondente."
+            }
+        ];
+
+        var userResponses = {};
+        var displayMode = "all";
+        var currentTopic = "ALL";
+        var currentStepPos = 0;
+
+        var simStartButton = false;
+        var simStopButton = false;
+        var simMotorQ00 = false;
+
+        function refreshLadderSim() {
+            var stopClosed = !simStopButton;
+            var branchClosed = simStartButton || simMotorQ00;
+            simMotorQ00 = stopClosed && branchClosed;
+
+            var stopSlash = document.getElementById("svg-stop-slash");
+            var wireMid = document.getElementById("svg-wire-mid");
+            var wireDownLeft = document.getElementById("svg-wire-down-left");
+            var wireSealIn = document.getElementById("svg-wire-seal-in");
+            var startClose = document.getElementById("svg-start-close");
+            var sealClose = document.getElementById("svg-seal-close");
+            var wireSealOut = document.getElementById("svg-wire-seal-out");
+            var wireUpRight = document.getElementById("svg-wire-up-right");
+            var wireToCoil = document.getElementById("svg-wire-to-coil");
+            var coilLamp = document.getElementById("svg-coil-lamp");
+            var statusPill = document.getElementById("sim-status-pill");
+
+            if (!stopSlash) return;
+
+            var colorStop = stopClosed ? "#10b981" : "#ef4444";
+            stopSlash.setAttribute("stroke", colorStop);
+            wireMid.setAttribute("stroke", stopClosed ? "#10b981" : "#475569");
+            wireDownLeft.setAttribute("stroke", stopClosed ? "#10b981" : "#475569");
+            wireSealIn.setAttribute("stroke", stopClosed ? "#10b981" : "#475569");
+
+            startClose.setAttribute("stroke", simStartButton ? "#38bdf8" : "transparent");
+            sealClose.setAttribute("stroke", simMotorQ00 ? "#10b981" : "transparent");
+
+            var outColor = simMotorQ00 ? "#10b981" : "#475569";
+            wireSealOut.setAttribute("stroke", outColor);
+            wireUpRight.setAttribute("stroke", outColor);
+            wireToCoil.setAttribute("stroke", outColor);
+            coilLamp.setAttribute("fill", simMotorQ00 ? "#10b981" : "transparent");
+
+            if (simMotorQ00) {
+                statusPill.className = "motor-status motor-on mono";
+                statusPill.innerHTML = "✔ SAÍDA Q0.0: LIGADA (SELO ATIVO = 1)";
+            } else {
+                statusPill.className = "motor-status motor-off mono";
+                statusPill.innerHTML = "SAÍDA Q0.0: DESLIGADA (0)";
+            }
+        }
+
+        function simPulseStart() {
+            simStartButton = true;
+            refreshLadderSim();
+            setTimeout(function() {
+                simStartButton = false;
+                refreshLadderSim();
+            }, 450);
+        }
+
+        function simPulseStop() {
+            simStopButton = true;
+            refreshLadderSim();
+            setTimeout(function() {
+                simStopButton = false;
+                refreshLadderSim();
+            }, 450);
+        }
+
+        function scrollToElement(id) {
+            var el = document.getElementById(id);
+            if (el) {
+                el.scrollIntoView({ behavior: "smooth", block: "start" });
+            }
+        }
+
+        function toggleTheorySection() {
+            var box = document.getElementById("theory-content");
+            var btn = document.getElementById("btn-toggle-theory");
+            if (box.classList.contains("hidden")) {
+                box.classList.remove("hidden");
+                btn.textContent = "Ocultar Guia";
+            } else {
+                box.classList.add("hidden");
+                btn.textContent = "Mostrar Guia";
+            }
+        }
+
+        function getFilteredQuestions() {
+            var list = [];
+            for (var i = 0; i < QUESTIONS.length; i++) {
+                var q = QUESTIONS[i];
+                if (currentTopic === "ALL") {
+                    list.push(q);
+                } else if (currentTopic === "WRONG") {
+                    if (userResponses[q.id] !== undefined && userResponses[q.id] !== q.correct) {
+                        list.push(q);
+                    }
+                } else if (q.topic === currentTopic) {
+                    list.push(q);
+                }
+            }
+            return list;
+        }
+
+        function setDisplayMode(mode) {
+            displayMode = mode;
+            var btnAll = document.getElementById("btn-view-all");
+            var btnStep = document.getElementById("btn-view-step");
+
+            if (mode === "all") {
+                btnAll.className = "btn btn-primary";
+                btnStep.className = "btn";
+            } else {
+                btnStep.className = "btn btn-primary";
+                btnAll.className = "btn";
+            }
+            renderQuizArea();
+        }
+
+        function changeTopicFilter(val) {
+            currentTopic = val;
+            currentStepPos = 0;
+            renderQuizArea();
+        }
+
+        function answerQuestion(qId, chosenIndex) {
+            if (userResponses[qId] !== undefined) {
+                return;
+            }
+            userResponses[qId] = chosenIndex;
+            updateTopScoreboard();
+            renderQuizArea();
+        }
+
+        function retrySingleQuestion(qId) {
+            delete userResponses[qId];
+            updateTopScoreboard();
+            renderQuizArea();
+        }
+
+        function resetAllQuestions() {
+            userResponses = {};
+            currentStepPos = 0;
+            currentTopic = "ALL";
+            var sel = document.getElementById("topic-filter");
+            if (sel) sel.value = "ALL";
+            updateTopScoreboard();
+            renderQuizArea();
+        }
+
+        function updateTopScoreboard() {
+            var total = QUESTIONS.length;
+            var answered = 0;
+            var hits = 0;
+            var misses = 0;
+
+            for (var i = 0; i < QUESTIONS.length; i++) {
+                var q = QUESTIONS[i];
+                var uAns = userResponses[q.id];
+                if (uAns !== undefined) {
+                    answered++;
+                    if (uAns === q.correct) {
+                        hits++;
+                    } else {
+                        misses++;
+                    }
+                }
+            }
+
+            var pct = answered > 0 ? Math.round((hits / answered) * 100) : 0;
+            var progressWidth = Math.round((answered / total) * 100);
+
+            document.getElementById("score-answered").textContent = answered + "/" + total;
+            document.getElementById("score-correct").textContent = hits;
+            document.getElementById("score-wrong").textContent = misses;
+            document.getElementById("score-pct").textContent = pct + "%";
+            document.getElementById("top-progress-bar").style.width = progressWidth + "%";
+        }
+
+        function renderPillsMap(filteredList) {
+            var mapEl = document.getElementById("pills-map");
+            if (!mapEl) return;
+            var html = "";
+
+            for (var i = 0; i < filteredList.length; i++) {
+                var q = filteredList[i];
+                var ans = userResponses[q.id];
+                var cls = "q-pill mono";
+
+                if (ans !== undefined) {
+                    cls += (ans === q.correct) ? " done-ok" : " done-err";
+                }
+                if (displayMode === "step" && i === currentStepPos) {
+                    cls += " active-step";
+                }
+
+                html += '<button type="button" class="' + cls + '" onclick="jumpToQuestion(' + i + ', ' + q.id + ')" title="Ir para Questão ' + q.id + '">' + q.id + '</button>';
+            }
+            mapEl.innerHTML = html;
+        }
+
+        function jumpToQuestion(indexInFiltered, qId) {
+            if (displayMode === "step") {
+                currentStepPos = indexInFiltered;
+                renderQuizArea();
+            } else {
+                var card = document.getElementById("questao-card-" + qId);
+                if (card) {
+                    card.scrollIntoView({ behavior: "smooth", block: "center" });
+                }
+            }
+        }
+
+        function goStep(newIndex) {
+            currentStepPos = newIndex;
+            renderQuizArea();
+            scrollToElement("secao-questoes");
+        }
+
+        function buildSingleCardHTML(q, posIndex, totalInFilter) {
+            var uAns = userResponses[q.id];
+            var isAnswered = (uAns !== undefined);
+            var isHit = isAnswered && (uAns === q.correct);
+            var letters = ["A", "B", "C", "D"];
+
+            var cardClass = "q-card";
+            var statusTag = '<span class="q-type-tag mono">Aguardando resposta</span>';
+
+            if (isAnswered) {
+                if (isHit) {
+                    cardClass += " card-correct";
+                    statusTag = '<span class="q-type-tag mono" style="background:rgba(16,185,129,0.2); color:#34d399; border:1px solid #10b981;">✔ ACERTOU</span>';
+                } else {
+                    cardClass += " card-wrong";
+                    statusTag = '<span class="q-type-tag mono" style="background:rgba(239,68,68,0.2); color:#f87171; border:1px solid #ef4444;">✖ ERROU</span>';
+                }
+            }
+
+            var typeLabel = (q.type === "TF") ? "Verdadeiro ou Falso (V/F)" : "Marcar [X] (Múltipla Escolha)";
+            var optionsContainerClass = (q.type === "TF") ? "options-tf-grid" : "options-container";
+
+            var optsHTML = '<div class="' + optionsContainerClass + '">';
+            for (var i = 0; i < q.options.length; i++) {
+                var optText = q.options[i];
+                var btnClass = "opt-btn";
+                var boxText = "";
+                var rightBadge = "";
+
+                if (q.type === "TF") {
+                    boxText = (i === 0) ? "V" : "F";
+                } else {
+                    boxText = letters[i];
+                }
+
+                if (isAnswered) {
+                    if (i === uAns) {
+                        boxText = "X";
+                    }
+                    if (i === q.correct) {
+                        btnClass += " is-correct-choice";
+                        rightBadge = '<span class="mono" style="font-size:12.5px; color:#34d399; font-weight:800; flex-shrink:0;">✔ CORRETA</span>';
+                    } else if (i === uAns && uAns !== q.correct) {
+                        btnClass += " is-wrong-choice";
+                        rightBadge = '<span class="mono" style="font-size:12.5px; color:#f87171; font-weight:800; flex-shrink:0;">✖ SUA MARCAÇÃO</span>';
+                    } else {
+                        btnClass += " is-dimmed";
+                    }
+                }
+
+                var disabledAttr = isAnswered ? 'disabled="disabled"' : '';
+                var prefixLetter = (q.type === "MC") ? '<strong>' + letters[i] + ')</strong> ' : '';
+
+                optsHTML += '' +
+                    '<button type="button" class="' + btnClass + '" ' + disabledAttr + ' onclick="answerQuestion(' + q.id + ', ' + i + ')">' +
+                        '<div class="opt-left">' +
+                            '<span class="check-box mono">[' + boxText + ']</span>' +
+                            '<span>' + prefixLetter + optText + '</span>' +
+                        '</div>' +
+                        rightBadge +
+                    '</button>';
+            }
+            optsHTML += '</div>';
+
+            var feedbackHTML = "";
+            if (isAnswered) {
+                var fbClass = isHit ? "feedback-panel fb-ok" : "feedback-panel fb-err";
+                var headlineText = isHit
+                    ? "✔ PARABÉNS! VOCÊ ACERTOU ESTA QUESTÃO!"
+                    : "✖ QUE PENA, VOCÊ ERROU! VEJA A RESPOSTA CORRETA ABAIXO:";
+
+                var correctFormatted = "";
+                if (q.type === "TF") {
+                    correctFormatted = q.options[q.correct].toUpperCase();
+                } else {
+                    correctFormatted = "Alternativa " + letters[q.correct] + " — " + q.options[q.correct];
+                }
+
+                feedbackHTML = '' +
+                    '<div class="' + fbClass + '">' +
+                        '<div class="fb-headline">' +
+                            '<span>' + headlineText + '</span>' +
+                            '<button type="button" class="btn" style="padding:5px 12px; font-size:12.5px;" onclick="retrySingleQuestion(' + q.id + ')">↺ Tentar Novamente</button>' +
+                        '</div>' +
+                        '<div class="correct-report-box">' +
+                            '<span>Gabarito Oficial / Resposta Correta:</span>' +
+                            '<strong>' + correctFormatted + '</strong>' +
+                        '</div>' +
+                        '<div class="fb-explanation">' +
+                            '<strong>💡 Explicação Técnica:</strong> ' + q.explanation +
+                        '</div>' +
+                    '</div>';
+            }
+
+            var stepNavHTML = "";
+            if (displayMode === "step") {
+                var prevBtn = (posIndex > 0)
+                    ? '<button type="button" class="btn" onclick="goStep(' + (posIndex - 1) + ')">← Anterior</button>'
+                    : '<button type="button" class="btn" disabled style="opacity:0.4; cursor:not-allowed;">← Anterior</button>';
+
+                var nextBtn = (posIndex < totalInFilter - 1)
+                    ? '<button type="button" class="btn btn-primary" onclick="goStep(' + (posIndex + 1) + ')">Próxima Questão →</button>'
+                    : '<button type="button" class="btn" disabled style="opacity:0.4; cursor:not-allowed;">Última Questão</button>';
+
+                stepNavHTML = '' +
+                    '<div class="step-nav-footer">' +
+                        prevBtn +
+                        '<span class="mono" style="font-size:13.5px; color:var(--text-muted);">Questão ' + (posIndex + 1) + ' de ' + totalInFilter + '</span>' +
+                        nextBtn +
+                    '</div>';
+            }
+
+            var zeroPadId = (q.id < 10) ? "0" + q.id : q.id;
+
+            return '' +
+                '<div id="questao-card-' + q.id + '" class="' + cardClass + '">' +
+                    '<div class="q-card-top">' +
+                        '<div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">' +
+                            '<span class="q-number mono">QUESTÃO ' + zeroPadId + '</span>' +
+                            '<span class="q-type-tag">' + typeLabel + '</span>' +
+                            '<span class="q-type-tag" style="color:#38bdf8;">' + q.topicName + '</span>' +
+                        '</div>' +
+                        statusTag +
+                    '</div>' +
+                    '<div class="q-prompt">' + q.question + '</div>' +
+                    optsHTML +
+                    feedbackHTML +
+                    stepNavHTML +
+                '</div>';
+        }
+
+        function renderQuizArea() {
+            var filtered = getFilteredQuestions();
+            renderPillsMap(filtered);
+
+            var container = document.getElementById("questions-container");
+            if (!container) return;
+
+            if (filtered.length === 0) {
+                container.innerHTML = '' +
+                    '<div class="q-card" style="text-align:center; padding:36px;">' +
+                        '<h3 style="margin-bottom:10px;">Nenhuma questão encontrada neste filtro!</h3>' +
+                        '<p style="color:var(--text-muted); margin-bottom:16px;">Se você selecionou "Revisar Apenas as que Errei", significa que você ainda não errou nenhuma questão.</p>' +
+                        '<button type="button" class="btn btn-primary" onclick="changeTopicFilter('ALL')">Mostrar Todas as 25 Questões</button>' +
+                    '</div>';
+                return;
+            }
+
+            if (displayMode === "step") {
+                if (currentStepPos >= filtered.length) {
+                    currentStepPos = 0;
+                }
+                container.innerHTML = buildSingleCardHTML(filtered[currentStepPos], currentStepPos, filtered.length);
+            } else {
+                var allHTML = "";
+                for (var i = 0; i < filtered.length; i++) {
+                    allHTML += buildSingleCardHTML(filtered[i], i, filtered.length);
+                }
+                container.innerHTML = allHTML;
+            }
+        }
+
+        refreshLadderSim();
+        updateTopScoreboard();
+        renderQuizArea();
+    </script>
+</body>
+</html>
